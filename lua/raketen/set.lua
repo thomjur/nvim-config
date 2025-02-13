@@ -28,14 +28,14 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 vim.opt.clipboard = "unnamedplus"
 vim.g.clipboard = {
-    name = "wsl",
+    name = "xclip",
     copy = {
-        ["+"] = "clip.exe",
-        ["*"] = "clip.exe",
+        ["+"] = "xclip -selection clipboard",
+        ["*"] = "xclip -selection primary",
     },
     paste = {
-        ["+"] = "powershell.exe Get-Clipboard",
-        ["*"] = "powershell.exe Get-Clipboard",
+        ["+"] = "xclip -selection clipboard -o",
+        ["*"] = "xclip -selection primary -o",
     },
     cache_enabled = 0,
 }
