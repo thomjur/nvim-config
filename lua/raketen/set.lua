@@ -1,4 +1,4 @@
-vim.cmd.colorscheme("tokyonight")
+vim.cmd.colorscheme("tokyonight-day")
  
 vim.opt.clipboard = 'unnamedplus' -- use system keyboard for yank
 
@@ -12,8 +12,7 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.smartindent = true
  
-vim.opt.wrap = true
-vim.opt.textwidth = 80
+vim.opt.wrap = false
  
 vim.opt.incsearch = true -- incremental search
  

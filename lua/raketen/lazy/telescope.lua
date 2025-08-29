@@ -1,28 +1,37 @@
 return {
-  {'nvim-telescope/telescope.nvim', tag = '0.1.8',
-      dependencies = { 'nvim-lua/plenary.nvim' }},
+  -- Telescope und seine AbhÑngigkeiten
+  {
+    'nvim-telescope/telescope.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('telescope').setup{
+        defaults = {
+          -- Standardkonfiguration fÅr Telescope
+          mappings = {
+            i = {
+              ["<C-h>"] = "which_key"
+            }
+          }
+        },
+        extensions = {
+          file_browser = {
+            theme = "ivy",
+            hijack_netrw = true,
+            hidden = true,
+          },
+        },
+      }
+    end,
+  },
+  -- Telescope File Browser Erweiterung
   {
     "nvim-telescope/telescope-file-browser.nvim",
-    requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
     config = function()
-      require("telescope").setup{
-       hijack_netrw = true,
-            mappings = {
-                ["i"] = { 
-                    ["<A-n>"] = "create",
-                    ["<A-d>"] = "remove",
-                    ["<A-r>"] = "rename",
-                },
-                ["n"] = { -- Normal-Modus
-                    ["n"] = "create", 
-                    ["d"] = "remove",
-                    ["r"] = "rename",
-                },
-            
-            }
-      }
-
-    end  
-  }
+      -- Laden der File Browser Erweiterung
+      require('telescope').load_extension('file_browser')
+      -- Tastenkombination fÅr den File Browser
+      vim.api.nvim_set_keymap('n', '<leader>e', '<cmd>Telescope file_browser<cr>', { noremap = true, silent = true })
+    end,
+  },
 }
-    
