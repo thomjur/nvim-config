@@ -1,5 +1,32 @@
-return { 
+return {
+  -- Mason for LSP server management
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = { "williamboman/mason.nvim" },
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = {
+          "gopls",
+          "ts_ls",
+          "svelte",
+          "pyright",
+          "cssls",
+        },
+        automatic_installation = true,
+      })
+    end
+  },
   {'neovim/nvim-lspconfig',
+  dependencies = {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+  },
   config= function()
     local on_attach = function(client, bufnr)
       local opts = { buffer = bufnr, remap = false }
@@ -15,25 +42,29 @@ return {
         vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, vim.tbl_deep_extend("force", opts, { desc = "LSP Rename" }))
         vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, vim.tbl_deep_extend("force", opts, { desc = "LSP Signature Help" }))
     end
+    
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+    
     require'lspconfig'.gopls.setup{
-      on_attach = on_attach
+      on_attach = on_attach,
+      capabilities = capabilities
     }
     require'lspconfig'.ts_ls.setup{
-      on_attach = on_attach
+      on_attach = on_attach,
+      capabilities = capabilities
     }
     require'lspconfig'.svelte.setup {
-      on_attach = on_attach
+      on_attach = on_attach,
+      capabilities = capabilities
     }
     require'lspconfig'.pyright.setup{
-      on_attach = on_attach
+      on_attach = on_attach,
+      capabilities = capabilities
     }
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
     require'lspconfig'.cssls.setup{
       on_attach = on_attach,
       capabilities = capabilities,
-      }
-    local lspconfig_defaults = require('lspconfig').util.default_config
-    lspconfig_defaults.capabilities = vim.tbl_deep_extend('force', lspconfig_defaults.capabilities, require('cmp_nvim_lsp').default_capabilities())
+    }
   end
   },
   { "stevearc/conform.nvim",
