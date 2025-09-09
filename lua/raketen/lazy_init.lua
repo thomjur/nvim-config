@@ -13,5 +13,9 @@ vim.opt.rtp:prepend(lazypath)
  
 require("lazy").setup({
     spec = "raketen.lazy",
-    change_detection = { notify = false }
+    change_detection = { notify = false },
+    -- Avoid vim.loader bytecode cache to prevent ENAMETOOLONG on deep paths
+    performance = {
+      cache = { enabled = false },
+    },
 })
