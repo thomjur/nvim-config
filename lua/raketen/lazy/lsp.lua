@@ -1,5 +1,4 @@
 return {
-  -- LSP Configuration
   {
     "neovim/nvim-lspconfig",
     dependencies = {
@@ -11,21 +10,21 @@ return {
       -- 1) mason core
       require("mason").setup()
 
-      -- 2) mason-lspconfig: install + auto-enable servers
+      -- 2) mason-lspconfig: install + auto-enable servers (v2 API)
       require("mason-lspconfig").setup({
         ensure_installed = {
           "gopls",
-          "ts_ls", -- was tsserver; ts_ls is correct for v2
+          "ts_ls", -- new id
           "svelte",
           "pyright",
           "cssls",
-          "lua_ls",              -- recommended for Neovim config/dev
+          "clangd",
+          "lua_ls",
         },
-        automatic_enable = true, --  replaces setup_handlers()
-        -- optional: automatic_installation = true,
+        automatic_enable = true, -- <— v2 feature
       })
 
-      -- 3) Your on_attach (keymaps etc.)
+      -- 3) on_attach + capabilities
       local on_attach = function(_, bufnr)
         local opts = { buffer = bufnr, remap = false }
         vim.keymap.set("n", "gr", vim.lsp.buf.references, vim.tbl_deep_extend("force", opts, { desc = "LSP References" }))
@@ -45,23 +44,20 @@ return {
         vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help,
           vim.tbl_deep_extend("force", opts, { desc = "Signature Help" }))
       end
-
-      -- 4) Advertise completion capabilities to all servers
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      -- 5) Global LSP defaults (picked up automatically for every server)
-      vim.lsp.config('*', {
+      -- 4) Global defaults for ALL servers (Neovim 0.11+)
+      vim.lsp.config("*", {
         on_attach = on_attach,
         capabilities = capabilities,
       })
     end,
   },
 
-  -- (You can keep these; they're redundant because of the dependencies above.)
   { "williamboman/mason.nvim",          build = ":MasonUpdate" },
   { "williamboman/mason-lspconfig.nvim" },
 
-  -- conform.nvim (unchanged)
+  -- conform.nvim (C/C++ formatting)
   {
     "stevearc/conform.nvim",
     event = { "BufReadPre", "BufNewFile" },
@@ -69,9 +65,11 @@ return {
       local conform = require("conform")
       conform.setup({
         formatters_by_ft = {
-          go = { "gofmt" },
-          lua = { "stylua" },
+          go         = { "gofmt" },
+          lua        = { "stylua" },
           javascript = { "prettierd", "prettier", stop_after_first = true },
+          c          = { "clang-format" },
+          cpp        = { "clang-format" },
         },
       })
       vim.keymap.set({ "n", "v" }, "<leader>l", function()
@@ -80,7 +78,6 @@ return {
     end,
   },
 
-  -- cmp pieces
   { "hrsh7th/cmp-nvim-lsp" },
   {
     "hrsh7th/nvim-cmp",
@@ -89,10 +86,7 @@ return {
       cmp.setup({
         sources = { { name = "nvim_lsp" } },
         snippet = {
-          expand = function(args)
-            -- requires Neovim 0.10+ (you're on 0.11)
-            vim.snippet.expand(args.body)
-          end,
+          expand = function(args) vim.snippet.expand(args.body) end, -- Neovim ≥0.10
         },
         mapping = cmp.mapping.preset.insert({
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
