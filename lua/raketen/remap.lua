@@ -16,3 +16,7 @@ vim.api.nvim_set_keymap("n", "<up>", "<cmd>echo 'use k instead!'<CR>", { noremap
 vim.api.nvim_set_keymap("n", "<C-d>", "<C-d>zz", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-u>", "<C-u>zz", { noremap = true, silent = true })
 vim.keymap.set("i", "<Esc>", "<C-c>", { noremap = true, silent = true })
+
+vim.keymap.set("n", "<leader>se", function()
+  vim.diagnostic.open_float(nil, { focus = false, border = "rounded" })
+end, { desc = "Show diagnostic error message" })
