@@ -6,7 +6,8 @@ return {
 
     config.setup({
       ensure_installed = {
-        "svelte", "css", "c", "lua", "vim", "go", "vimdoc", "elixir", "javascript", "html", "python", "typescript"
+        "rust", "svelte", "css", "c", "lua", "vim", "go", "vimdoc", "elixir", "javascript", "html", "python",
+        "typescript"
       },
       sync_install = false,
       highlight = { enable = true },

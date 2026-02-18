@@ -20,6 +20,7 @@ return {
           "cssls",
           "clangd",
           "lua_ls",
+          "rust_analyzer",
         },
         automatic_enable = true, -- <— v2 feature
       })
@@ -67,7 +68,7 @@ return {
         formatters_by_ft = {
           go         = { "gofmt" },
           lua        = { "stylua" },
-          javascript = { "prettierd", "prettier", stop_after_first = true },
+          javascript = { "prettierd", "prettier" },
           c          = { "clang-format" },
           cpp        = { "clang-format" },
         },
@@ -81,15 +82,34 @@ return {
   { "hrsh7th/cmp-nvim-lsp" },
   {
     "hrsh7th/nvim-cmp",
+    dependencies = {
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+    },
     config = function()
       local cmp = require("cmp")
       cmp.setup({
-        sources = { { name = "nvim_lsp" } },
+        completion = {
+          autocomplete = {
+            cmp.TriggerEvent.TextChanged,
+            cmp.TriggerEvent.InsertEnter,
+          },
+          keyword_length = 1, -- Vorschläge ab dem ersten getippten Zeichen
+        },
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "buffer" },
+          { name = "path" },
+        },
         snippet = {
-          expand = function(args) vim.snippet.expand(args.body) end, -- Neovim ≥0.10
+          expand = function(args)
+            vim.snippet.expand(args.body)
+          end,
         },
         mapping = cmp.mapping.preset.insert({
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<Tab>"] = cmp.mapping.confirm({ select = true }),
+          ["<Up>"] = cmp.mapping.select_next_item(),
+          ["<Down>"] = cmp.mapping.select_prev_item(),
         }),
       })
     end,
