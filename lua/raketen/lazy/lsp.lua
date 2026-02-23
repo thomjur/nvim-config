@@ -107,9 +107,9 @@ return {
           end,
         },
         mapping = cmp.mapping.preset.insert({
-          ["<Tab>"] = cmp.mapping.confirm({ select = true }),
-          ["<Up>"] = cmp.mapping.select_next_item(),
-          ["<Down>"] = cmp.mapping.select_prev_item(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }),
+          ["<Down>"] = cmp.mapping.select_next_item(),
+          ["<Up>"] = cmp.mapping.select_prev_item(),
         }),
       })
     end,
