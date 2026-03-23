@@ -18,6 +18,7 @@ return {
           "svelte",
           "pyright",
           "cssls",
+          "html",
           "clangd",
           "lua_ls",
           "rust_analyzer",
@@ -69,12 +70,16 @@ return {
           go         = { "gofmt" },
           lua        = { "stylua" },
           javascript = { "prettierd", "prettier" },
+          html       = { "prettierd", "prettier", stop_after_first = true },
           c          = { "clang-format" },
           cpp        = { "clang-format" },
+          scss = {},
         },
       })
       vim.keymap.set({ "n", "v" }, "<leader>l", function()
-        conform.format({ lsp_fallback = true, async = false, timeout_ms = 1000 })
+        local ft = vim.bo.filetype
+        local fallback = ft ~= "scss"
+        conform.format({ lsp_fallback = fallback, async = false, timeout_ms = 1000 })
       end, { desc = "Format file or range (in visual mode)" })
     end,
   },

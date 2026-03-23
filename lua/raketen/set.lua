@@ -12,16 +12,21 @@ vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.smartindent = true
 
-vim.opt.wrap = false
+vim.opt.wrap = true
 
 vim.opt.incsearch = true -- incremental search
 
 vim.opt.termguicolors = true
 
 vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*", -- Alle Dateien
+  pattern = "*",
   callback = function()
-    vim.lsp.buf.format({ async = false })
+    local ft = vim.bo.filetype
+    require("conform").format({
+      lsp_fallback = ft ~= "scss",
+      async = false,
+      timeout_ms = 1000,
+    })
   end,
 })
 
